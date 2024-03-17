@@ -2,6 +2,7 @@
 .DS_Store
 .AppleDouble
 .LSOverride
+archived
 
 # Icon must end with two \r
 Icon
@@ -31,3 +32,8 @@ xcuserdata/
 ## Xcode 8 and earlier
 *.xcscmblueprint
 *.xccheckout
+
+# Local
+OOP_L2.xcodeproj
+OOP_L2.xcodeproj/project.xcworkspace/contents.xcworkspacedata
+OOP_L2.xcodeproj/project.xcworkspace/xcshareddata/IDEWorkspaceChecks.plist

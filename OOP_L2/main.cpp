@@ -1,6 +1,8 @@
+// Custom include //
 #include "Crossword.hpp"
-#include "Base.hpp"
+#include "Cell.hpp"
 #include "Tree.hpp"
+
 #include <iostream>
 #include <string>
 #include <map>
@@ -11,40 +13,33 @@
 #include <time.h>
 using namespace std;
 
-map<string, string> Dictionary;
-Tree* root;
+map<int, string> Dictionary;
 int dict_init();
+void dict_print(map<int, string> Dictionary);
 
 // START OF MAIN //
 int main(int argc, const char * argv[]) {
-//    Crossword A(N, M);
-//    A.printField();
-    int SIZE_DICT = 0;
     int R, C = 0;
-    char* str = (char*)(malloc(10*sizeof(char)));
     cout << "Height:";
     cin >> R;
     cout << "Width:";
     cin >> C;
     cout << endl;
-    dict_init();
-    cout << "Creating of field..." << endl;
-    map<string, string>::iterator iter;
-    iter = Dictionary.begin();
+    
+    if(dict_init() == 1){ exit(0); }
+    dict_print(Dictionary);
+    
+    Tree* root = new Tree('0'); // prepare tree of letters
+    map<int, string>::iterator iter = Dictionary.begin();
     int i = 0;
-    while(iter != Dictionary.end()){
-        if(i != 0){ cout << "Loading – " << (i*100/Dictionary.size()) << endl; }
-        const char* tmp_str = iter->first.data();
-        const char* tmp_def = iter->second.data();
-        for(int i = 0; i < strlen(tmp_str); i++){
-            root->insert(str, tmp_str, tmp_def);
-            strncpy(str, tmp_str, strlen(tmp_str) - i - 1);
-        }
-        iter++;
+    for(const auto& pair : Dictionary){
+        root->insert(pair.second.data(), pair.second.substr(0, pair.second.size() - 1));
     }
-//    Treelist* lst = root->getList();
-//    Base* tmp_base;
-//    Crossword Board(R, C);
+    root->printTree();
+    Crossword Board(R, C);
+    Board.printField();
+    
+    
 //    int count = 0;
 //    int count_def = 0;
 //    int flag = 0;
@@ -123,6 +118,14 @@ int main(int argc, const char * argv[]) {
 }
 // END OF MAIN //
 
+int sumChar(string str){
+    int sum = 0;
+    for(int i = 0; i < str.size(); i++){
+        sum += str.c_str()[i];
+    }
+    return sum;
+}
+
 int dict_init(){
     ifstream inputfile;
     string input = "/Users/anastasia/Uni/Xcode_prj/OOP_L2/OOP_L2/dict.txt";
@@ -142,16 +145,18 @@ int dict_init(){
     int i = 0;
     while (getline(inputfile, tmp)){
         if(i%2 == 0){
-            word = tmp;
+            word = tmp + '_';
         }
         else{
-            Dictionary.insert(pair<string, string>(word, tmp));
+            Dictionary.insert(pair<int, string>(sumChar(word), word));
         }
         i++;
     }
-//    std::for_each(Dictionary.begin(), Dictionary.end(), [](auto&& pair) {
-//            std::cout << pair.first << ": " << pair.second << std::endl;
-//    });
     return 0;
 }
 
+void dict_print(map<int, string> Dictionary){
+    std::for_each(Dictionary.begin(), Dictionary.end(), [](auto&& pair) {
+            std::cout << pair.first << ": " << pair.second << std::endl;
+    });
+}
